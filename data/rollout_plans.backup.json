@@ -1,0 +1,69 @@
+
+{
+  "A Only": [
+    {
+      "type": "Downtown",
+      "option": "Paid Reservations",
+      "launches": [4, 0, 0, 6, 6, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "type": "University",
+      "option": "Memberships",
+      "launches": [2, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+  ],
+
+  "A Full Network": [
+    {
+      "type": "Downtown",
+      "option": "Paid Reservations",
+      "launches": [4, 0, 0, 6, 6, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "type": "University",
+      "option": "Memberships",
+      "launches": [2, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "type": "Suburban",
+      "option": "Operator Partnership",
+      "launches": [0, 0, 0, 0, 0, 0, 2, 6, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+  ],
+
+  "B Only": [
+    {
+      "type": "Suburban",
+      "option": "Corporate Accounts",
+      "launches": [4, 0, 0, 6, 6, 6, 6, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "type": "Downtown",
+      "option": "Corporate Accounts",
+      "launches": [2, 0, 0, 0, 0, 0, 0, 2, 6, 6, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "type": "University",
+      "option": "Corporate Accounts",
+      "launches": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+  ],
+
+  "Hybrid": [
+    {
+      "type": "Downtown",
+      "option": "Paid Reservations",
+      "launches": [3, 0, 0, 6, 6, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "type": "University",
+      "option": "Memberships",
+      "launches": [0, 0, 0, 0, 0, 3, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      "type": "Suburban",
+      "option": "Corporate Accounts",
+      "launches": [3, 0, 0, 0, 0, 0, 0, 5, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+  ]
+}

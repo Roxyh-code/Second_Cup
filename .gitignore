@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Generated analysis outputs
+outputs/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

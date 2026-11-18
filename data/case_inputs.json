@@ -1,0 +1,294 @@
+
+{
+  "_description": "Second Cup Case 2026 inputs from Appendix A2-A8. All monetary amounts are CAD.",
+  "store_types": {
+    "Downtown": {
+      "annual_sales": 1040250,
+      "transactions": 300,
+      "ticket": 9.5,
+      "dine_share": 0.64,
+      "base_profit": 57968,
+      "seats": 38,
+      "peak_use": 0.88,
+      "quiet_use": 0.45,
+      "stay_hours": 1.5,
+      "open_hours": 12,
+
+      "consider_work": 0.38,
+      "willing_hour": 5,
+      "willing_month": 55,
+      "brand_concern": 0.48,
+      "late_interest": 0.30,
+      "employers": 120,
+
+      "cowork_spaces": 6,
+      "cowork_daypass": 45,
+      "competing_cafes": 14,
+      "libraries": 2,
+      "remote_mix": 0.35,
+      "student_mix": 0.10,
+      "social_mix": 0.55,
+
+      "regulars": 480,
+      "member_conv_min": 0.20,
+      "member_conv_max": 0.35,
+      "res_hour_price": 4.50,
+      "member_month_price": 49.50,
+      "reserved_seats": 6,
+      "quiet_sell_min": 0.10,
+      "quiet_sell_max": 0.25,
+      "peak_sell_min": 0.30,
+      "peak_sell_max": 0.50,
+      "reservation_length": 2,
+      "new_reservation_share": 0.35,
+
+      "member_hours_min": 25,
+      "member_hours_max": 45,
+      "member_prior_hours": 13,
+      "member_peak_share": 0.55,
+      "extra_visits_member": 1,
+
+      "lost_walkin_min": 0.40,
+      "lost_walkin_max": 0.60,
+      "cafe_contrib": 0.40,
+
+      "res_opex": 7000,
+      "member_opex": 5000,
+      "partner_opex": 4000,
+      "saas_store_fixed": 1800,
+      "saas_share": 0.03,
+      "franchise_fee_workspace": 0.105,
+
+      "capex_res": 26000,
+      "capex_mem": 11000,
+      "capex_partner": 12000,
+
+      "late_tx_min": 8,
+      "late_tx_max": 20,
+      "late_contrib": 0.40,
+      "late_labour": 8000,
+      "late_waste": 0.06,
+
+      "accounts_min": 4,
+      "accounts_max": 8,
+      "orders_per_week": 3,
+      "cups_per_order": 12,
+      "weeks_year": 50,
+      "cup_price": 4.60,
+      "corp_contrib": 0.32,
+
+      "capex_late": 55000,
+      "capex_corp": 15000,
+
+      "candidates": 18,
+      "multi_owner": 11,
+      "early_interest": 9
+    },
+
+    "University": {
+      "annual_sales": 848625,
+      "transactions": 310,
+      "ticket": 7.50,
+      "dine_share": 0.58,
+      "base_profit": 33093,
+      "seats": 52,
+      "peak_use": 0.75,
+      "quiet_use": 0.35,
+      "stay_hours": 2,
+      "open_hours": 14,
+
+      "consider_work": 0.42,
+      "willing_hour": 3.50,
+      "willing_month": 35,
+      "brand_concern": 0.61,
+      "late_interest": 0.45,
+      "employers": 80,
+
+      "cowork_spaces": 2,
+      "cowork_daypass": 30,
+      "competing_cafes": 9,
+      "libraries": 5,
+      "remote_mix": 0.15,
+      "student_mix": 0.55,
+      "social_mix": 0.30,
+
+      "regulars": 520,
+      "member_conv_min": 0.20,
+      "member_conv_max": 0.35,
+      "res_hour_price": 3.15,
+      "member_month_price": 31.50,
+      "reserved_seats": 8,
+      "quiet_sell_min": 0.05,
+      "quiet_sell_max": 0.15,
+      "peak_sell_min": 0.20,
+      "peak_sell_max": 0.35,
+      "reservation_length": 2,
+      "new_reservation_share": 0.35,
+
+      "member_hours_min": 25,
+      "member_hours_max": 45,
+      "member_prior_hours": 17,
+      "member_peak_share": 0.35,
+      "extra_visits_member": 1,
+
+      "lost_walkin_min": 0.40,
+      "lost_walkin_max": 0.60,
+      "cafe_contrib": 0.40,
+
+      "res_opex": 7000,
+      "member_opex": 5000,
+      "partner_opex": 4000,
+      "saas_store_fixed": 1800,
+      "saas_share": 0.03,
+      "franchise_fee_workspace": 0.105,
+
+      "capex_res": 33000,
+      "capex_mem": 14000,
+      "capex_partner": 14000,
+
+      "late_tx_min": 25,
+      "late_tx_max": 50,
+      "late_contrib": 0.40,
+      "late_labour": 8000,
+      "late_waste": 0.06,
+
+      "accounts_min": 2,
+      "accounts_max": 5,
+      "orders_per_week": 3,
+      "cups_per_order": 12,
+      "weeks_year": 50,
+      "cup_price": 4.60,
+      "corp_contrib": 0.32,
+
+      "capex_late": 40000,
+      "capex_corp": 12000,
+
+      "candidates": 10,
+      "multi_owner": 4,
+      "early_interest": 5
+    },
+
+    "Suburban": {
+      "annual_sales": 713575,
+      "transactions": 230,
+      "ticket": 8.50,
+      "dine_share": 0.64,
+      "base_profit": 44231,
+      "seats": 44,
+      "peak_use": 0.65,
+      "quiet_use": 0.25,
+      "stay_hours": 1.5,
+      "open_hours": 12,
+
+      "consider_work": 0.24,
+      "willing_hour": 4,
+      "willing_month": 39,
+      "brand_concern": 0.42,
+      "late_interest": 0.33,
+      "employers": 90,
+
+      "cowork_spaces": 1,
+      "cowork_daypass": 30,
+      "competing_cafes": 4,
+      "libraries": 1,
+      "remote_mix": 0.22,
+      "student_mix": 0.08,
+      "social_mix": 0.70,
+
+      "regulars": 300,
+      "member_conv_min": 0.20,
+      "member_conv_max": 0.35,
+      "res_hour_price": 3.60,
+      "member_month_price": 35.10,
+      "reserved_seats": 6,
+      "quiet_sell_min": 0.03,
+      "quiet_sell_max": 0.10,
+      "peak_sell_min": 0.10,
+      "peak_sell_max": 0.20,
+      "reservation_length": 2,
+      "new_reservation_share": 0.35,
+
+      "member_hours_min": 25,
+      "member_hours_max": 45,
+      "member_prior_hours": 13,
+      "member_peak_share": 0.40,
+      "extra_visits_member": 1,
+
+      "lost_walkin_min": 0.40,
+      "lost_walkin_max": 0.60,
+      "cafe_contrib": 0.40,
+
+      "res_opex": 7000,
+      "member_opex": 5000,
+      "partner_opex": 4000,
+      "saas_store_fixed": 1800,
+      "saas_share": 0.03,
+      "franchise_fee_workspace": 0.105,
+
+      "capex_res": 30000,
+      "capex_mem": 10000,
+      "capex_partner": 12000,
+
+      "late_tx_min": 10,
+      "late_tx_max": 25,
+      "late_contrib": 0.40,
+      "late_labour": 8000,
+      "late_waste": 0.06,
+
+      "accounts_min": 4,
+      "accounts_max": 7,
+      "orders_per_week": 3,
+      "cups_per_order": 12,
+      "weeks_year": 50,
+      "cup_price": 4.60,
+      "corp_contrib": 0.32,
+
+      "capex_late": 45000,
+      "capex_corp": 15000,
+
+      "candidates": 32,
+      "multi_owner": 9,
+      "early_interest": 6
+    }
+  },
+
+  "global": {
+    "days": 365,
+    "peak_hours": 5,
+    "discount": 0.10,
+
+    "royalty": 0.075,
+    "ad_fee": 0.02,
+    "local_marketing": 0.01,
+
+    "licensed_hq_setup": 25000,
+    "custom_hq_setup": 280000,
+    "custom_hq_annual": 45000,
+    "partner_hq_setup": 30000,
+
+    "operator_keep": 0.40,
+    "operator_new_visits": 0.45,
+
+    "corp_hq_setup": 40000,
+    "corp_hq_annual": 90000,
+    "late_hq_setup": 150000,
+    "late_hq_annual": 40000,
+
+    "budget_total": 1200000,
+    "year1_budget": 600000,
+    "budget_reserve": 500000,
+
+    "max_per_q": 6,
+    "pilot_obs_q": 2,
+
+    "hq_payback_years": 4,
+    "owner_payback_years": 3,
+
+    "satisfaction": 4.2,
+    "service_mins": 3.5,
+
+    "months": 12,
+    "quarters": 4,
+    "new_visit_purchase": 1
+  }
+}
