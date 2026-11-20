@@ -72,7 +72,7 @@ def _financed_counts(launches: Sequence[Launch], data: Inputs,
         signed = (terms.signed_accounts_by_type[typ]
                   if terms.signed_accounts_by_type is not None
                   and typ in terms.signed_accounts_by_type
-                  else midpoint(data, typ, "accounts_min", "accounts_max", over))
+                  else midpoint(data, typ, "accounts_min", "accounts_max", Overrides()))
         if signed >= MIN_SIGNED_ACCOUNTS[typ]:
             counts[typ] += cohort.count
 
