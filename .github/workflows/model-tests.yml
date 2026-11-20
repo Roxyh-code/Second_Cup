@@ -70,6 +70,10 @@ jobs:
         run: python model_team_deck.py --supporting-fee 0 --output outputs/team_deck_no_fee
       - name: Run weaker landlord conversion sensitivity
         run: python model_team_deck.py --landlord-conversion .15 --output outputs/team_deck_conversion_15pct
+      - name: Run 50 percent noninterested consent stress
+        run: python model_team_deck.py --financing-conversion .5 --output outputs/team_deck_financing_50pct
+      - name: Run 67 percent noninterested consent stress
+        run: python model_team_deck.py --financing-conversion .6666666667 --output outputs/team_deck_financing_67pct
       - name: Upload integrated model results
         uses: actions/upload-artifact@v4
         with:
@@ -85,6 +89,8 @@ jobs:
             outputs/team_deck_landlord_cost_stress/
             outputs/team_deck_no_fee/
             outputs/team_deck_conversion_15pct/
+            outputs/team_deck_financing_50pct/
+            outputs/team_deck_financing_67pct/
           if-no-files-found: error
       - name: Upload landlord cost-analysis results
         uses: actions/upload-artifact@v4
