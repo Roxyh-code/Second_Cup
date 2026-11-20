@@ -45,6 +45,9 @@ DECK_ROLLOUT = (
 @dataclass(frozen=True)
 class TeamAssumptions:
     base_interest_consent: float = 1.0
+    # Conditional fraction of remaining candidates brought in by HQ advances.
+    # 100% is the team target; lower rates are explicitly hypothetical stress.
+    financing_additional_conversion: float = 1.0
     loan_uptake: float = 2 / 3
     annual_loan_interest: float = .10
     loan_sweep: float = .75
@@ -68,7 +71,8 @@ class TeamAssumptions:
     slot_annual_per_cafe: float = 0.0  # optional OWNER cost, not HQ
 
     def validate(self):
-        bounded = ("base_interest_consent", "loan_uptake", "loan_sweep",
+        bounded = ("base_interest_consent", "financing_additional_conversion",
+                   "loan_uptake", "loan_sweep",
                    "conversion_of_intros", "team_supporting_fee",
                    "first_quarter_sales_ramp", "no_slots_sales_leakage")
         for key in bounded:
@@ -182,9 +186,9 @@ def evaluate_team_case(data: Inputs, *,
         full, data,
         ParticipationTerms(
             interested_conversion=terms.base_interest_consent,
-            additional_conversion_with_finance=1.0,
+            additional_conversion_with_finance=terms.financing_additional_conversion,
             incremental_financing_uptake=terms.loan_uptake))
-    launch = full if l1 else plans["baseline"]
+    launch = plans["with_finance"] if l1 else plans["baseline"]
     funded = allocate_team_advances(launch, terms.loan_uptake) if l1 else {}
     first_q = [0.] * (PROGRAM_Q + 1)
     fees_q = [0.] * (PROGRAM_Q + 1)
@@ -400,6 +404,7 @@ def evaluate_team_case(data: Inputs, *,
         "case_confirmed_franchisee_consents": "UNKNOWN",
         "case_informal_interest": 20,
         "base_interest_consent_assumed": terms.base_interest_consent,
+        "financing_additional_conversion_assumed": terms.financing_additional_conversion,
         "participating_cafes": sum(c.count for c in launch),
         "participating_downtown": full_counts["Downtown"],
         "participating_university": full_counts["University"],
