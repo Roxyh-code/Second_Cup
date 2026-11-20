@@ -9,6 +9,8 @@ on:
       - "lever1_hq_financing.py"
       - "lever2_landlord_acquisition.py"
       - "landlord_cost_sensitivity.py"
+      - "lever3_deferred_fee.py"
+      - "integrated_levers.py"
       - ".github/workflows/model-tests.yml"
   pull_request:
     paths:
@@ -18,6 +20,8 @@ on:
       - "lever1_hq_financing.py"
       - "lever2_landlord_acquisition.py"
       - "landlord_cost_sensitivity.py"
+      - "lever3_deferred_fee.py"
+      - "integrated_levers.py"
       - ".github/workflows/model-tests.yml"
 jobs:
   test:
@@ -40,6 +44,18 @@ jobs:
       - name: Run Landlord cost sensitivity with financing
         run: python landlord_cost_sensitivity.py --with-financing
 
+      - name: Run Lever 3 standalone
+        run: python lever3_deferred_fee.py
+      - name: Run all eight integrated lever combinations
+        run: python integrated_levers.py
+      - name: Upload integrated model results
+        uses: actions/upload-artifact@v4
+        with:
+          name: integrated-lever-analysis
+          path: |
+            outputs/integrated/
+            outputs/deferred_fee/
+          if-no-files-found: error
       - name: Upload landlord cost-analysis results
         uses: actions/upload-artifact@v4
         with:
