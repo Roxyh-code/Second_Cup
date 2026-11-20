@@ -50,8 +50,8 @@ jobs:
 
       - name: Run Lever 3 standalone
         run: python lever3_deferred_fee.py
-      - name: Run all eight integrated lever combinations
-        run: python integrated_levers.py
+      - name: Run legacy fixed-60 lever combinations for regression
+        run: python integrated_levers.py --fixed-60 --output outputs/integrated
       - name: Run financing-led participation sensitivity
         run: python participation_uplift.py
       - name: Run consent-aware eight-lever combinations
