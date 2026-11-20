@@ -8,6 +8,7 @@ on:
       - "tests/**"
       - "lever1_hq_financing.py"
       - "lever2_landlord_acquisition.py"
+      - "landlord_cost_sensitivity.py"
       - ".github/workflows/model-tests.yml"
   pull_request:
     paths:
@@ -16,6 +17,7 @@ on:
       - "tests/**"
       - "lever1_hq_financing.py"
       - "lever2_landlord_acquisition.py"
+      - "landlord_cost_sensitivity.py"
       - ".github/workflows/model-tests.yml"
 jobs:
   test:
@@ -33,3 +35,7 @@ jobs:
         run: python lever2_landlord_acquisition.py
       - name: Run Lever 1 and 2 integrated
         run: python lever2_landlord_acquisition.py --with-financing
+      - name: Run Landlord cost sensitivity and break-even
+        run: python landlord_cost_sensitivity.py
+      - name: Run Landlord cost sensitivity with financing
+        run: python landlord_cost_sensitivity.py --with-financing
