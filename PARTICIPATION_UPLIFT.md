@@ -62,3 +62,8 @@ accounts in both a 20-store and a 47-store scenario.
 empirical conversion estimate. Type-average cafés are not identified actual
 sites. Increasing participation beyond these source slots or toward a new
 timeline requires separate operational evidence and scheduling analysis.
+
+The integrated comparator also reports the participant count in each scenario,
+and scales the expected number of landlord partners to realized participant
+counts by café type. L1's role as *consent enablement* can therefore affect
+L2 acquisitions and L3 fee receipts without inventing new locations.

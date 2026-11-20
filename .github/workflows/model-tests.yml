@@ -11,6 +11,7 @@ on:
       - "landlord_cost_sensitivity.py"
       - "lever3_deferred_fee.py"
       - "integrated_levers.py"
+      - "participation_uplift.py"
       - ".github/workflows/model-tests.yml"
   pull_request:
     paths:
@@ -22,6 +23,7 @@ on:
       - "landlord_cost_sensitivity.py"
       - "lever3_deferred_fee.py"
       - "integrated_levers.py"
+      - "participation_uplift.py"
       - ".github/workflows/model-tests.yml"
 jobs:
   test:
@@ -48,6 +50,10 @@ jobs:
         run: python lever3_deferred_fee.py
       - name: Run all eight integrated lever combinations
         run: python integrated_levers.py
+      - name: Run financing-led participation sensitivity
+        run: python participation_uplift.py
+      - name: Run consent-aware eight-lever combinations
+        run: python integrated_levers.py --participation-uplift --output outputs/integrated_participation
       - name: Upload integrated model results
         uses: actions/upload-artifact@v4
         with:
@@ -55,6 +61,8 @@ jobs:
           path: |
             outputs/integrated/
             outputs/deferred_fee/
+            outputs/integrated_participation/
+            outputs/participation/
           if-no-files-found: error
       - name: Upload landlord cost-analysis results
         uses: actions/upload-artifact@v4
