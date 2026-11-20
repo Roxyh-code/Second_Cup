@@ -116,3 +116,25 @@ put in a small sensitivity footnote.
 > 27 cups per planned production window can be prepared without exceeding
 > 3.5-minute service or reducing 4.2 satisfaction. If those operational
 > and franchisee milestones are not met, we hold expansion.
+
+## Additional validated downside checks (supporting slide / Q&A)
+
+The primary team-deck aligned scenario has HQ NPV **+$581,619**
+and simple HQ payback of **3.0 years**, with all 60 cafés ultimately
+participating and 120 hypothetical landlord-originated accounts.
+
+- **No additional 5% fee:** HQ NPV stays **+$242,657**, HQ simple
+  payback approximately **3.25 years**. This is the most useful
+  financial stress because the fee is a team proposal, not a Case
+  requirement.
+- **Landlord conversion halves from 30% to 15%** (60 rather than 120
+  new accounts): HQ NPV approximately **+$437,919**, with simple HQ
+  payback **3.0 years**.
+- **If 5% of otherwise captured corporate sales were lost without
+  protected production slots** (hypothetical): the slots would avoid
+  approximately **$71,710** of five-year HQ value loss; show as
+  downside protection only, NOT incremental assured revenue.
+
+These tests are available as separate output folders and do not alter
+the primary Case-faithful 0% leakage default. They do **not** address
+the risk that all 60 candidate franchisees may refuse consent.
