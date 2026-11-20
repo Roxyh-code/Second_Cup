@@ -22,6 +22,75 @@ from secondcup.landlord_acquisition import LandlordTerms, run_landlord
 from secondcup.scenarios import get_launches
 
 TYPES = ("Downtown", "University", "Suburban")
+
+# Legacy per-partner cost API, retained for earlier analysis/tests.
+# This maps to the same integrated L2 cash-flow engine as the new scenario CLI.
+from dataclasses import dataclass
+from math import isfinite
+
+
+@dataclass(frozen=True)
+class CostTerms:
+    acquisition_cost_per_signed_account: float
+    setup_cost_per_partner: float = 0.0
+    annual_hq_support_cost: float = 0.0
+
+    def validate(self):
+        values = (self.acquisition_cost_per_signed_account,
+                  self.setup_cost_per_partner, self.annual_hq_support_cost)
+        if not all(isfinite(v) and v >= 0 for v in values):
+            raise ValueError("Costs must be finite and nonnegative")
+
+
+def _partner_cost_terms(launches, terms, cost):
+    cost.validate()
+    active_types = {c.typ for c in launches
+                    if c.option == "Corporate Accounts" and c.count > 0}
+    partners = sum(terms.partners_by_type.get(typ, 0.0)
+                   for typ in active_types)
+    return replace(
+        terms,
+        acquisition_cost_per_signed_account=cost.acquisition_cost_per_signed_account,
+        additional_hq_setup_cost=terms.additional_hq_setup_cost
+                                 + partners * cost.setup_cost_per_partner,
+        additional_hq_annual_cost=terms.additional_hq_annual_cost
+                                  + cost.annual_hq_support_cost,
+    )
+
+
+def cost_case(strategy, launches, data, terms, cost, financing=None):
+    """Compatibility wrapper returning full costed summary and quarterly ledger."""
+    run_terms = _partner_cost_terms(launches, terms, cost)
+    result = run_landlord(strategy, launches, data, run_terms, financing=financing)
+    summary = dict(result.summary)
+    summary.update({
+        "fully_costed_hq_npv_5y": summary["integrated_hq_npv_5y"],
+        "partner_setup_cost_total": summary["additional_hq_setup_cost"],
+        "incremental_support_cost_per_year": summary["additional_hq_annual_cost"],
+        "five_year_total_new_hq_cost_undiscounted":
+            summary["total_incremental_hq_cost_5y_gross"],
+    })
+    quarters = []
+    for row in result.hq_quarters:
+        quarters.append({
+            **row,
+            "partner_setup_cost": row["additional_partner_setup_cost"],
+            "incremental_support_cost": row["additional_partner_annual_cost"],
+            "landlord_cac": row["acquisition_cost"],
+        })
+    return {"summary": summary, "quarters": quarters,
+            "acquisition_cohorts": result.acquisition_cohorts}
+
+
+def breakeven(strategy, launches, data, terms, cost, financing=None):
+    """Compatibility wrapper; economic NPV-neutral CAC on the same baseline."""
+    run_terms = _partner_cost_terms(launches, terms, cost)
+    analysis = break_even_analysis(strategy, launches, data, run_terms, financing)
+    return {**analysis,
+            "npv_break_even_cac_per_account":
+                analysis.get("max_cac_for_nonnegative_incremental_npv")}
+
+
 COST_CASES = (
     ("CAC saving (referral efficiencies)", 250.0, 0.0, 0.0),
     ("Current model", 500.0, 0.0, 0.0),
