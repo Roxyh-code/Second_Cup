@@ -110,6 +110,27 @@ class TeamDeckTest(unittest.TestCase):
             m["waterfall"][-1]["total_npv_increase_vs_B"],delta=.03)
         self.assertEqual(m["waterfall"][-1]["scenario"],"L11_L21_L31")
 
+    def test_team_order_and_isolated_effects_bridge_reconcile(self):
+        m=run_team_matrix(self.data,self.base)
+        self.assertEqual(len(m["team_order_waterfall"]),4)
+        self.assertEqual(len(m["standalone_effects"]),3)
+        self.assertEqual(m["team_order_waterfall"][1]["stage"],
+                         "Add Landlord Channel")
+        b=m["scenarios"][0]["hq_5y_npv"]
+        full=m["scenarios"][-1]["hq_5y_npv"]
+        isolated=sum(r["npv_uplift_vs_strategy_B"] for r in m["standalone_effects"])
+        synergy=m["value_bridge"][-2]["npv_amount"]
+        self.assertAlmostEqual(b+isolated+synergy,full,delta=.03)
+        self.assertEqual(m["standalone_effects"][2]["npv_uplift_vs_strategy_B"],0)
+
+    def test_pilot_q1_q2_observed_q3_scale_first_legal(self):
+        from secondcup.scenarios import Launch
+        pilot=Launch("Suburban","Corporate Accounts",0,6)
+        early=Launch("Suburban","Corporate Accounts",1,1)
+        permitted=Launch("Suburban","Corporate Accounts",2,1)
+        self.assertTrue(validate_launches([pilot,early],self.data))
+        self.assertEqual(validate_launches([pilot,permitted],self.data),[])
+
     def test_extra_landlord_costs_and_fee_off_is_configurable(self):
         t=replace(self.base,landlord_extra_setup=5000,
                   landlord_extra_annual=10000,team_supporting_fee=0)
