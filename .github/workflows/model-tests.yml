@@ -12,6 +12,7 @@ on:
       - "lever3_deferred_fee.py"
       - "integrated_levers.py"
       - "participation_uplift.py"
+      - "strategy_b_attribution.py"
       - ".github/workflows/model-tests.yml"
   pull_request:
     paths:
@@ -24,6 +25,7 @@ on:
       - "lever3_deferred_fee.py"
       - "integrated_levers.py"
       - "participation_uplift.py"
+      - "strategy_b_attribution.py"
       - ".github/workflows/model-tests.yml"
 jobs:
   test:
@@ -54,6 +56,8 @@ jobs:
         run: python participation_uplift.py
       - name: Run consent-aware eight-lever combinations
         run: python integrated_levers.py --participation-uplift --output outputs/integrated_participation
+      - name: Run Strategy B common-cost and lever attribution
+        run: python strategy_b_attribution.py
       - name: Upload integrated model results
         uses: actions/upload-artifact@v4
         with:
@@ -63,6 +67,7 @@ jobs:
             outputs/deferred_fee/
             outputs/integrated_participation/
             outputs/participation/
+            outputs/strategy_b_attribution/
           if-no-files-found: error
       - name: Upload landlord cost-analysis results
         uses: actions/upload-artifact@v4
