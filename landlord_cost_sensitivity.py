@@ -25,6 +25,7 @@ TYPES = ("Downtown", "University", "Suburban")
 COST_CASES = (
     ("CAC saving (referral efficiencies)", 250.0, 0.0, 0.0),
     ("Current model", 500.0, 0.0, 0.0),
+    ("CAC saving plus modest overhead", 250.0, 5000.0, 10000.0),
     ("Modest added overhead", 500.0, 5000.0, 10000.0),
     ("Higher added overhead", 500.0, 5000.0, 20000.0),
     ("Combined cost pressure", 1000.0, 5000.0, 20000.0),
@@ -154,6 +155,33 @@ def cost_scenarios(strategy, launches, data, base_terms, financing=None):
     return rows
 
 
+def two_way_cost_matrix(strategy, launches, data, base_terms, financing=None,
+                        *, setup=5000.0):
+    """Two-way CAC x annual additional HQ cost sensitivity at a fixed setup."""
+    zero_partners = replace(base_terms, partners_by_type={t: 0 for t in TYPES},
+                            additional_hq_setup_cost=0, additional_hq_annual_cost=0,
+                            acquisition_cost_per_signed_account=0)
+    without = run_landlord(strategy, launches, data, zero_partners,
+                           financing=financing).summary["integrated_hq_npv_5y"]
+    rows = []
+    for cac in (250.0, 500.0, 750.0, 1000.0):
+        for annual in (0.0, 10000.0, 20000.0, 30000.0):
+            terms = replace(base_terms, acquisition_cost_per_signed_account=cac,
+                            additional_hq_setup_cost=setup,
+                            additional_hq_annual_cost=annual)
+            s = run_landlord(strategy, launches, data, terms,
+                             financing=financing).summary
+            rows.append({
+                "cac": cac, "additional_setup": setup, "additional_annual": annual,
+                "hq_npv_5y": s["integrated_hq_npv_5y"],
+                "incremental_npv_vs_no_landlord": round(s["integrated_hq_npv_5y"] - without, 2),
+                "hq_four_year_target_met": s["hq_four_year_target_met"],
+                "budget_3y_met": s["budget_3y_met"],
+                "reserve_diagnostic_met": s["reserve_target_diagnostic_met"],
+            })
+    return rows
+
+
 def main():
     parser = argparse.ArgumentParser(description="Landlord L2 CAC + fixed-cost sensitivity")
     parser.add_argument("--strategy", default="B Only", choices=load_rollouts())
@@ -179,12 +207,18 @@ def main():
     finance = FinancingTerms(uptake=args.financing_uptake) if args.with_financing else None
     rows = cost_scenarios(args.strategy, launches, data, terms, finance)
     threshold = break_even_analysis(args.strategy, launches, data, terms, finance)
+    matrix = two_way_cost_matrix(args.strategy, launches, data, terms, finance,
+                                 setup=args.setup)
     output = args.output or ROOT / "outputs" / "landlord" / "cost_sensitivity"
     output.mkdir(parents=True, exist_ok=True)
     with (output / "cost_scenarios.csv").open("w", newline="", encoding="utf-8-sig") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
+    with (output / "cost_matrix.csv").open("w", newline="", encoding="utf-8-sig") as fh:
+        writer = csv.DictWriter(fh, fieldnames=list(matrix[0]))
+        writer.writeheader()
+        writer.writerows(matrix)
     (output / "break_even.json").write_text(json.dumps(threshold, indent=2), encoding="utf-8")
     (output / "assumptions.json").write_text(json.dumps({
         "strategy": args.strategy, "with_financing": args.with_financing,

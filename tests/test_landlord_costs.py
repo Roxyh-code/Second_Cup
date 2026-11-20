@@ -11,7 +11,7 @@ from secondcup.inputs import Inputs
 from secondcup.scenarios import get_launches
 from secondcup.hq_financing import FinancingTerms
 from secondcup.landlord_acquisition import LandlordTerms, run_landlord
-from landlord_cost_sensitivity import break_even_analysis, cost_scenarios
+from landlord_cost_sensitivity import break_even_analysis, cost_scenarios, two_way_cost_matrix
 
 
 class LandlordCostsTest(unittest.TestCase):
@@ -72,8 +72,20 @@ class LandlordCostsTest(unittest.TestCase):
                                1278.36, delta=3)
         self.assertLess(b["binding_max_annual_with_case_budget_and_payback"], 31000)
         scenarios = cost_scenarios("B Only", self.launches, self.data, t)
-        self.assertEqual(len(scenarios), 5)
+        self.assertEqual(len(scenarios), 6)
         self.assertLess(scenarios[-1]["incremental_hq_npv_vs_no_l2"], 0)
+
+    def test_two_way_grid_and_mixed_savings_case(self):
+        base = LandlordTerms()
+        rows = two_way_cost_matrix("B Only", self.launches, self.data, base)
+        self.assertEqual(len(rows), 16)
+        self.assertEqual(rows[0]["cac"], 250)
+        self.assertEqual(rows[-1]["additional_annual"], 30000)
+        combined = run_landlord("B Only", self.launches, self.data,
+                                LandlordTerms(acquisition_cost_per_signed_account=250,
+                                              additional_hq_setup_cost=5000,
+                                              additional_hq_annual_cost=10000))
+        self.assertAlmostEqual(combined.summary["integrated_hq_npv_5y"], 198456.3, delta=1)
 
     def test_financing_composes_and_cost_is_on_hq_only(self):
         finance = FinancingTerms(uptake=2 / 3)

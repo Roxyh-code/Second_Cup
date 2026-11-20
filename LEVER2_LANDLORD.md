@@ -75,7 +75,9 @@ python -m unittest discover -s tests -v
 `outputs/landlord/cost_sensitivity/cost_scenarios.csv` and analytic cost ceilings
 to `break_even.json`; other assumptions are exported separately. Compare the
 same funnel with CAC $250 (savings), $500 (prior default), +$5k upfront and
-+$10k or +$20k/year (additional management), and a CAC $1,000 stress.
++$10k or +$20k/year (additional management), and a CAC $1,000 stress. It also includes a mixed case of **CAC $250 plus
+$5k setup and $10k/year** and writes `cost_matrix.csv`, a 4×4 two-way
+sensitivity of CAC versus annual incremental HQ cost at the selected setup.
 
 **HQ incremental economic break-even** means incremental HQ NPV of L2
 compared with the **same financing/no-L2 baseline** is exactly zero. The
