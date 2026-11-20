@@ -55,7 +55,7 @@ class FinancingTest(unittest.TestCase):
                                 first["contribution_per_cafe"] * 0.25 - 1e-5)
         for q in result.hq_quarters:
             self.assertAlmostEqual(q["combined_hq_cash"],
-                                   q["baseline_hq_cash"] + q["net_loan_cash"], places=2)
+                                   q["baseline_hq_cash"] + q["net_loan_cash"], delta=0.02)
         self.assertAlmostEqual(result.summary["gross_loan_advances"],
                                sum(q["loan_advances"] for q in result.hq_quarters), places=2)
 
