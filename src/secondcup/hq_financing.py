@@ -32,6 +32,10 @@ class FinancingTerms:
     # Explicit signed counts take precedence. Case midpoints are planning proxies,
     # not proof of signed contracts; use real signed counts before live financing.
     signed_accounts_by_type: Mapping[str, float] | None = None
+    # Optional: leave the earliest N already-participating stores of each type
+    # self-funded, and offer HQ advances only to later incremental converts.
+    # Applied only to actual Corporate Accounts cohorts in their launch order.
+    unfunded_priority_by_type: Mapping[str, int] | None = None
 
     def validate(self) -> None:
         for name in ("uptake", "contribution_sweep", "first_quarter_ramp"):
@@ -40,6 +44,10 @@ class FinancingTerms:
                 raise ValueError(f"{name} must be in [0, 1]")
         if self.annual_interest < 0:
             raise ValueError("annual_interest must be nonnegative")
+        if self.unfunded_priority_by_type is not None:
+            for typ, n in self.unfunded_priority_by_type.items():
+                if typ not in MIN_SIGNED_ACCOUNTS or type(n) is not int or n < 0:
+                    raise ValueError(f"Invalid unfunded priority: {typ}={n}")
         if self.signed_accounts_by_type is not None:
             for typ, signed in self.signed_accounts_by_type.items():
                 if typ not in MIN_SIGNED_ACCOUNTS or signed < 0:
@@ -76,6 +84,10 @@ def _financed_counts(launches: Sequence[Launch], data: Inputs,
         if signed >= MIN_SIGNED_ACCOUNTS[typ]:
             counts[typ] += cohort.count
 
+    if terms.unfunded_priority_by_type is not None:
+        for typ in counts:
+            counts[typ] = max(0, counts[typ] -
+                              terms.unfunded_priority_by_type.get(typ, 0))
     eligible = sum(counts.values())
     target = min(eligible, floor(eligible * terms.uptake + 0.5))
     if eligible == 0 or target == 0:
@@ -129,6 +141,7 @@ def run_financing(strategy: str, launches: Sequence[Launch], data: Inputs,
 
     target_by_type = _financed_counts(launches, data, over, terms)
     remaining = target_by_type.copy()
+    skip_remaining = dict(terms.unfunded_priority_by_type or {})
     advances = [0.0] * (PROGRAM_END_Q + 1)
     principal_receipts = [0.0] * (PROGRAM_END_Q + 1)
     interest_receipts = [0.0] * (PROGRAM_END_Q + 1)
@@ -144,7 +157,11 @@ def run_financing(strategy: str, launches: Sequence[Launch], data: Inputs,
         if cohort.count <= 0:
             continue
         unit = unit_economics(data, cohort.typ, cohort.option, over)
-        funded = (min(cohort.count, remaining[cohort.typ])
+        skip = (min(cohort.count, skip_remaining.get(cohort.typ, 0))
+                if cohort.option == "Corporate Accounts" else 0)
+        if skip:
+            skip_remaining[cohort.typ] -= skip
+        funded = (min(cohort.count - skip, remaining[cohort.typ])
                   if cohort.option == "Corporate Accounts" else 0)
         if funded:
             remaining[cohort.typ] -= funded
@@ -273,7 +290,8 @@ def run_financing(strategy: str, launches: Sequence[Launch], data: Inputs,
         "strategy": strategy, "uptake_target": terms.uptake,
         "eligible_cafes": sum(_financed_counts(launches, data, over,
                                             FinancingTerms(uptake=1.0,
-                                            signed_accounts_by_type=terms.signed_accounts_by_type)).values()),
+                                            signed_accounts_by_type=terms.signed_accounts_by_type,
+                                            unfunded_priority_by_type=terms.unfunded_priority_by_type)).values()),
         "financed_cafes": financed_cafes, "total_cafes": total_cafes,
         "gross_loan_advances": round(gross_loan_advances, 2),
         "principal_collected_by_2031": round(sum(principal_receipts), 2),
