@@ -62,7 +62,8 @@ franchisee NPV, and separate $500k reserve diagnostics.
 ```bash
 python strategy_b_attribution.py
 python strategy_b_attribution.py --interest-conversion .5 --financing-conversion .25
-python integrated_levers.py --participation-uplift
+python integrated_levers.py                  # B Only consent-aware by default
+python integrated_levers.py --fixed-60       # Legacy 60-cafe assumption
 python -m unittest discover -s tests -v
 ```
 
