@@ -512,7 +512,63 @@ def run_team_matrix(data, terms: TeamAssumptions | None = None):
             "hq_gross_spending_2027_2029": s["hq_gross_spending_2027_2029"],
         })
         previous = s
+    # Match the three-enabler order on the team's Executive Summary slide.
+    team_order = ("L10_L20_L30", "L10_L21_L30",
+                  "L11_L21_L30", "L11_L21_L31")
+    team_order_waterfall = []
+    previous = None
+    for scenario in team_order:
+        cur = lookup[scenario]
+        team_order_waterfall.append({
+            "stage": ("Strategy B only" if previous is None else
+                      "Add Landlord Channel" if scenario == team_order[1] else
+                      "Add Cash Advance" if scenario == team_order[2] else
+                      "Add Fixed Production Slots"),
+            "scenario": scenario,
+            "participating_cafes": cur["participating_cafes"],
+            "hq_5y_npv": cur["hq_5y_npv"],
+            "step_npv_increase": round(
+                cur["hq_5y_npv"] - previous["hq_5y_npv"], 2)
+                if previous is not None else 0.,
+            "hq_payback_years": cur["hq_payback_years"],
+            "hq_2027_gross_spending": cur["hq_gross_spending_2027"],
+            "hq_3y_gross_spending": cur["hq_gross_spending_2027_2029"],
+        })
+        previous = cur
+
+    isolated = []
+    for name, scenario in zip(LEVER_NAMES,
+                              ("L11_L20_L30", "L10_L21_L30", "L10_L20_L31")):
+        isolated.append({
+            "lever": name, "scenario": scenario,
+            "standalone_hq_npv": lookup[scenario]["hq_5y_npv"],
+            "npv_uplift_vs_strategy_B": round(
+                lookup[scenario]["hq_5y_npv"] - baseline, 2),
+            "is_qualified_assumption": (name != "Fixed Production Slots"
+                                        or terms.no_slots_sales_leakage > 0),
+        })
+    pure = sum(x["npv_uplift_vs_strategy_B"] for x in isolated)
+    total_uplift = lookup["L11_L21_L31"]["hq_5y_npv"] - baseline
+    additional_synergy = round(total_uplift - pure, 2)
+    value_bridge = [{
+        "component": "Strategy B only", "npv_amount": round(baseline, 2),
+        "classification": "common Strategy B business"
+    }] + [{
+        "component": x["lever"], "npv_amount": x["npv_uplift_vs_strategy_B"],
+        "classification": "standalone incremental impact"
+    } for x in isolated] + [{
+        "component": "Cross-lever synergies",
+        "npv_amount": additional_synergy,
+        "classification": "interaction residual; not an extra distinct initiative"
+    }, {
+        "component": "Full team proposal HQ NPV",
+        "npv_amount": lookup["L11_L21_L31"]["hq_5y_npv"],
+        "classification": "total project HQ five-year NPV"
+    }]
     return {"scenarios": rows, "waterfall": waterfall,
+            "team_order_waterfall": team_order_waterfall,
+            "standalone_effects": isolated,
+            "value_bridge": value_bridge,
             "hq_quarters": [dict(r2, scenario=r["summary"]["scenario"])
                             for r in results for r2 in r["hq_quarters"]],
             "owners": [dict(r2, scenario=r["summary"]["scenario"])
