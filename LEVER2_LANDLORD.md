@@ -72,7 +72,7 @@ python -m unittest discover -s tests -v
 ```
 
 `landlord_cost_sensitivity.py` writes scenario comparisons to
-`outputs/landlord/cost_sensitivity/cost_scenarios.csv` and analytic cost ceilings
+`outputs/landlord/cost_sensitivity/{standalone,with_financing}/cost_scenarios.csv` and analytic cost ceilings
 to `break_even.json`; other assumptions are exported separately. Compare the
 same funnel with CAC $250 (savings), $500 (prior default), +$5k upfront and
 +$10k or +$20k/year (additional management), and a CAC $1,000 stress. It also includes a mixed case of **CAC $250 plus
@@ -94,3 +94,7 @@ requires approximately 16.1 more fully productive accounts each year simply
 to cover that annual cost on a steady-state basis, **before** extra CAC and
 ramp-up. Reducing CAC from $500 to $250 saves $30,000 in undiscounted
 launch-year cash costs for 120 accounts, but does not itself create sales.
+
+GitHub Actions runs both modes and uploads downloadable `landlord-cost-analysis`
+CSV/JSON outputs as a workflow artifact. Default output folders are separate
+so the combined L1+L2 results never overwrite standalone L2.

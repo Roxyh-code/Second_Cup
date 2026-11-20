@@ -278,7 +278,8 @@ def main():
     threshold = break_even_analysis(args.strategy, launches, data, terms, finance)
     matrix = two_way_cost_matrix(args.strategy, launches, data, terms, finance,
                                  setup=args.setup)
-    output = args.output or ROOT / "outputs" / "landlord" / "cost_sensitivity"
+    output = args.output or ROOT / "outputs" / "landlord" / "cost_sensitivity" / (\
+        "with_financing" if args.with_financing else "standalone")
     output.mkdir(parents=True, exist_ok=True)
     with (output / "cost_scenarios.csv").open("w", newline="", encoding="utf-8-sig") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(rows[0]))

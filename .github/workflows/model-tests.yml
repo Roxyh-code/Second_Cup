@@ -39,3 +39,10 @@ jobs:
         run: python landlord_cost_sensitivity.py
       - name: Run Landlord cost sensitivity with financing
         run: python landlord_cost_sensitivity.py --with-financing
+
+      - name: Upload landlord cost-analysis results
+        uses: actions/upload-artifact@v4
+        with:
+          name: landlord-cost-analysis
+          path: outputs/landlord/cost_sensitivity/
+          if-no-files-found: error
