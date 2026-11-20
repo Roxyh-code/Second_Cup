@@ -33,13 +33,19 @@ def main():
     p.add_argument("--introductions", type=float, default=6)
     p.add_argument("--conversion", type=float, default=0.5)
     p.add_argument("--cac", type=float, default=500)
+    p.add_argument("--extra-hq-setup", type=float, default=0,
+                   help="Additional one-time landlord program cost, beyond Case $40k setup")
+    p.add_argument("--extra-hq-annual", type=float, default=0,
+                   help="Additional annual landlord management cost, beyond mandatory Case $90k/year")
     p.add_argument("--output", type=Path, default=None)
     args = p.parse_args()
     terms = LandlordTerms(
         partners_by_type=dict(zip(("Downtown", "University", "Suburban"), args.partners)),
         tenant_introductions_per_partner=args.introductions,
         signed_conversion_rate=args.conversion,
-        acquisition_cost_per_signed_account=args.cac)
+        acquisition_cost_per_signed_account=args.cac,
+        additional_hq_setup_cost=args.extra_hq_setup,
+        additional_hq_annual_cost=args.extra_hq_annual)
     result = run_landlord(args.strategy, get_launches(args.strategy),
                           Inputs.from_file(), terms,
                           financing=FinancingTerms(uptake=args.financing_uptake)
@@ -56,7 +62,10 @@ def main():
     (folder / "assumptions.json").write_text(json.dumps({
         "partner_counts": dict(terms.partners_by_type),
         "introductions": args.introductions, "conversion": args.conversion,
-        "cac": args.cac, "financing_uptake": args.financing_uptake
+        "cac": args.cac,
+        "extra_hq_setup": args.extra_hq_setup,
+        "extra_hq_annual": args.extra_hq_annual,
+        "financing_uptake": args.financing_uptake
         if args.with_financing else 0,
         "status": "Hypothetical planning inputs, not Case observations",
         "coordination_expense": "Full $90k every year, no portal setup"},

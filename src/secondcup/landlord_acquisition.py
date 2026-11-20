@@ -24,6 +24,8 @@ class LandlordTerms:
     signed_conversion_rate: float = 0.50
     acquisition_cost_per_signed_account: float = 500.0
     first_quarter_ramp: float = 0.50
+    additional_hq_setup_cost: float = 0.0
+    additional_hq_annual_cost: float = 0.0
 
     def validate(self):
         if not 0 <= self.signed_conversion_rate <= 1:
@@ -32,6 +34,8 @@ class LandlordTerms:
             raise ValueError("first_quarter_ramp must be in [0,1]")
         if self.tenant_introductions_per_partner < 0 or self.acquisition_cost_per_signed_account < 0:
             raise ValueError("introductions and CAC cannot be negative")
+        if self.additional_hq_setup_cost < 0 or self.additional_hq_annual_cost < 0:
+            raise ValueError("Additional HQ setup and annual costs cannot be negative")
         if any(t not in TYPES or n < 0 for t, n in self.partners_by_type.items()):
             raise ValueError("Invalid landlord partner counts")
 
@@ -56,6 +60,13 @@ def run_landlord(strategy: str, launches: Sequence[Launch], data: Inputs,
         typ: sum(c.count for c in launches
                  if c.typ == typ and c.option == "Corporate Accounts")
         for typ in TYPES}
+    # Engaging landlords has potential management expense even when no
+    # tenant signs. It is only incurred if at least one eligible corporate
+    # cafe is in the rollout and a landlord partnership is attempted.
+    partner_program_active = any(
+        participants[t] > 0 and terms.partners_by_type.get(t, 0) > 0 for t in TYPES)
+    extra_setup = terms.additional_hq_setup_cost if partner_program_active else 0.0
+    extra_annual = terms.additional_hq_annual_cost if partner_program_active else 0.0
     per_cafe = {}
     by_type = {}
     for typ in TYPES:
@@ -154,7 +165,9 @@ def run_landlord(strategy: str, launches: Sequence[Launch], data: Inputs,
             "owner_npv_operating_after_acquisition_per_cafe": round(n1, 2),
             "operating_payback_years": pb})
 
-    cash = [v - acquisition_costs[q] for q, v in enumerate(before_cac)]
+    extra_fixed_costs = [extra_setup] + [extra_annual / 4.0] * 20
+    cash = [v - acquisition_costs[q] - extra_fixed_costs[q]
+            for q, v in enumerate(before_cac)]
     cumulative = 0.0
     payback = None
     cash_at_year4 = 0.0
@@ -171,14 +184,18 @@ def run_landlord(strategy: str, launches: Sequence[Launch], data: Inputs,
             "baseline_hq_cash": round(base.cashflows[q], 2),
             "cash_before_acquisition_cost": round(before_cac[q], 2),
             "acquisition_cost": round(acquisition_costs[q], 2),
+            "additional_partner_setup_cost": round(extra_setup if q == 0 else 0.0, 2),
+            "additional_partner_annual_cost": round(extra_annual / 4 if q else 0.0, 2),
+            "total_landlord_cost": round(acquisition_costs[q] + extra_fixed_costs[q], 2),
             "combined_hq_cash": round(v, 2),
             "cumulative_hq_cash": round(cumulative, 2),
             "loan_advances": loanq.get("loan_advances", 0.0),
             "loan_principal_received": loanq.get("principal_received", 0.0),
             "loan_interest_received": loanq.get("interest_received", 0.0),
             "loan_principal_outstanding": loanq.get("principal_outstanding", 0.0)})
-    y1 = base.hq_spend_year1 + sum(acquisition_costs[:4])
-    three_y = base.hq_spend_first_3y + sum(acquisition_costs[:12])
+    y1 = base.hq_spend_year1 + sum(acquisition_costs[:4]) + extra_setup + extra_annual
+    three_y = (base.hq_spend_first_3y + sum(acquisition_costs[:12])
+               + extra_setup + 3.0 * extra_annual)
     if loan_quarters is not None:
         y1 += sum(q["loan_advances"] for q in loan_quarters[:4])
         three_y += sum(q["loan_advances"] for q in loan_quarters[:12])
@@ -195,6 +212,12 @@ def run_landlord(strategy: str, launches: Sequence[Launch], data: Inputs,
         "incremental_accounts": round(sum(
             per_cafe[t] * participants[t] for t in TYPES), 6),
         "incremental_acquisition_cost": round(sum(acquisition_costs), 2),
+        "additional_hq_setup_cost": round(extra_setup, 2),
+        "additional_hq_annual_cost": round(extra_annual, 2),
+        "additional_hq_fixed_cost_5y_gross": round(extra_setup + 5 * extra_annual, 2),
+        "total_incremental_hq_cost_5y_gross": round(
+            sum(acquisition_costs) + extra_setup + 5 * extra_annual, 2),
+        "partner_program_active": partner_program_active,
         "incremental_annual_sales_at_steady_state": round(sum(
             r["incremental_annual_sales"] for r in cohorts), 2),
         "incremental_annual_hq_royalty_at_steady_state": round(sum(
