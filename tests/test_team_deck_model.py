@@ -152,6 +152,18 @@ class TeamDeckTest(unittest.TestCase):
             self.assertGreater(post[name]["steady_owner_profit_lift_pct"],
                                pre[name]["steady_owner_profit_lift_pct"])
 
+    def test_partial_financing_consent_is_a_true_l1_stress(self):
+        lower=replace(self.base, financing_additional_conversion=.5)
+        x=evaluate_team_case(self.data, switches=(True,True,True),
+                             terms=lower)["summary"]
+        full=evaluate_team_case(self.data, switches=(True,True,True),
+                                terms=self.base)["summary"]
+        self.assertEqual(x["participating_cafes"],40)
+        self.assertEqual(x["new_cafes_enabled_by_L1"],20)
+        self.assertLess(x["hq_5y_npv"],full["hq_5y_npv"])
+        self.assertEqual(full["participating_cafes"],60)
+        self.assertAlmostEqual(full["hq_5y_npv"],581619.29,delta=.02)
+
     def test_invalid_assumptions_fail(self):
         for t in (replace(self.base,no_slots_sales_leakage=-.1),
                   replace(self.base,conversion_of_intros=1.1),
