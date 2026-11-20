@@ -84,8 +84,14 @@ def run_grid(strategy, data, launches, *,
 def main():
     p = argparse.ArgumentParser(description="All 8 HQ/landlord/deferred-fee combinations")
     p.add_argument("--strategy", choices=load_rollouts(), default="B Only")
-    p.add_argument("--participation-uplift", action="store_true",
-                   help="Model Case A8 interested vs financing-unlocked stores; B Only")
+    mode = p.add_mutually_exclusive_group()
+    mode.add_argument("--participation-uplift", dest="participation_uplift",
+                      action="store_true",
+                      help="Model Case A8 interest vs financing-unlocked stores")
+    mode.add_argument("--fixed-60", dest="participation_uplift",
+                      action="store_false",
+                      help="Legacy comparison: assume all 60 candidates participate")
+    p.set_defaults(participation_uplift=None)
     p.add_argument("--interest-conversion", type=float, default=1.0)
     p.add_argument("--financing-conversion", type=float, default=2 / 3)
     p.add_argument("--incremental-loan-uptake", type=float, default=1.0)
@@ -102,8 +108,16 @@ def main():
     p.add_argument("--partners", nargs=3, type=float, default=[12, 8, 20])
     p.add_argument("--introductions", type=float, default=6)
     p.add_argument("--conversion", type=float, default=.5)
-    p.add_argument("--output", type=Path, default=ROOT / "outputs" / "integrated")
+    p.add_argument("--output", type=Path, default=None)
     args = p.parse_args()
+    # The Strategy B baseline defaults to an explicit, consent-aware
+    # no-lever comparator; older 60-cafe forecasts remain opt-in.
+    if args.participation_uplift is None:
+        args.participation_uplift = args.strategy == "B Only"
+    if args.output is None:
+        args.output = ROOT / "outputs" / (
+            "integrated_participation" if args.participation_uplift
+            else "integrated_fixed_60")
     data = Inputs.from_file()
     inputs = vars(args).copy()
     strategy = inputs.pop("strategy")
