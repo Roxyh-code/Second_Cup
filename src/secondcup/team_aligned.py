@@ -479,6 +479,40 @@ def team_slots_operational_metrics(data, terms: TeamAssumptions):
     return result
 
 
+def owner_profit_lifts(data: Inputs, terms: TeamAssumptions):
+    """Mature-year profit uplift vs existing café profit; includes common fee."""
+    out = []
+    for typ in TYPES:
+        original = (data.get(typ, "accounts_min") +
+                    data.get(typ, "accounts_max")) / 2
+        extra = (terms.landlord_partners[TYPES.index(typ)]
+                 * terms.introductions_per_partner
+                 * terms.conversion_of_intros / data.get(typ, "candidates"))
+        for has_landlord, accounts in ((False, original), (True, original + extra)):
+            sales = (accounts * data.get(typ, "orders_per_week")
+                     * data.get(typ, "cups_per_order")
+                     * data.get(typ, "weeks_year")
+                     * data.get(typ, "cup_price"))
+            mature_owner_contribution = (
+                sales * (data.get(typ, "corp_contrib")
+                         - terms.team_supporting_fee)
+                - terms.portal_owner_annual)
+            out.append({
+                "type": typ,
+                "landlord_accounts_included": has_landlord,
+                "accounts_per_cafe": round(accounts, 3),
+                "annual_corporate_sales_per_cafe": round(sales, 2),
+                "annual_owner_contribution_after_fee_and_portal":
+                    round(mature_owner_contribution, 2),
+                "existing_annual_cafe_profit": data.get(typ, "base_profit"),
+                "steady_owner_profit_lift_pct": round(
+                    100 * mature_owner_contribution /
+                    data.get(typ, "base_profit"), 2),
+                "fee_is_team_proposal_not_case": True,
+            })
+    return out
+
+
 def run_team_matrix(data, terms: TeamAssumptions | None = None):
     terms = terms or TeamAssumptions()
     results = [evaluate_team_case(data, switches=bits, terms=terms)
@@ -575,4 +609,5 @@ def run_team_matrix(data, terms: TeamAssumptions | None = None):
                        for r in results for r2 in r["owner_cohorts"]],
             "loans": [dict(r2, scenario=r["summary"]["scenario"])
                       for r in results for r2 in r["loan_schedule"]],
-            "slot_metrics": team_slots_operational_metrics(data, terms)}
+            "slot_metrics": team_slots_operational_metrics(data, terms),
+            "owner_profit_lifts": owner_profit_lifts(data, terms)}
