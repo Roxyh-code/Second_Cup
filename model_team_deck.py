@@ -37,6 +37,8 @@ def main():
     p.add_argument("--loan-uptake", type=float, default=2 / 3)
     p.add_argument("--supporting-fee", type=float, default=.05)
     p.add_argument("--interested-consent", type=float, default=1.0)
+    p.add_argument("--financing-conversion", type=float, default=1.0,
+                   help="Hypothetical share of non-interested candidates L1 converts")
     p.add_argument("--slot-setup-per-cafe", type=float, default=0)
     p.add_argument("--slot-annual-per-cafe", type=float, default=0)
     p.add_argument("--output", type=Path, default=ROOT/"outputs"/"team_deck")
@@ -50,6 +52,7 @@ def main():
         loan_uptake=args.loan_uptake,
         team_supporting_fee=args.supporting_fee,
         base_interest_consent=args.interested_consent,
+        financing_additional_conversion=args.financing_conversion,
         slot_setup_per_cafe=args.slot_setup_per_cafe,
         slot_annual_per_cafe=args.slot_annual_per_cafe)
     data = Inputs.from_file()
