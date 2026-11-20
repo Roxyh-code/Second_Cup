@@ -1,0 +1,35 @@
+name: Financial model regression tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/secondcup/**"
+      - "data/**"
+      - "tests/**"
+      - "lever1_hq_financing.py"
+      - "lever2_landlord_acquisition.py"
+      - ".github/workflows/model-tests.yml"
+  pull_request:
+    paths:
+      - "src/secondcup/**"
+      - "data/**"
+      - "tests/**"
+      - "lever1_hq_financing.py"
+      - "lever2_landlord_acquisition.py"
+      - ".github/workflows/model-tests.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run standard-library model regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Run Lever 1 standalone
+        run: python lever1_hq_financing.py --rates 0 0.6666666667 1
+      - name: Run Lever 2 standalone
+        run: python lever2_landlord_acquisition.py
+      - name: Run Lever 1 and 2 integrated
+        run: python lever2_landlord_acquisition.py --with-financing
