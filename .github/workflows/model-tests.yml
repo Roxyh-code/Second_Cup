@@ -13,6 +13,7 @@ on:
       - "integrated_levers.py"
       - "participation_uplift.py"
       - "strategy_b_attribution.py"
+      - "model_team_deck.py"
       - ".github/workflows/model-tests.yml"
   pull_request:
     paths:
@@ -26,6 +27,7 @@ on:
       - "integrated_levers.py"
       - "participation_uplift.py"
       - "strategy_b_attribution.py"
+      - "model_team_deck.py"
       - ".github/workflows/model-tests.yml"
 jobs:
   test:
@@ -58,6 +60,12 @@ jobs:
         run: python integrated_levers.py --participation-uplift --output outputs/integrated_participation
       - name: Run Strategy B common-cost and lever attribution
         run: python strategy_b_attribution.py
+      - name: Run team-deck aligned primary financial model
+        run: python model_team_deck.py
+      - name: Run illustrative 5 percent no-slots sales leakage downside
+        run: python model_team_deck.py --leakage-without-slots .05 --output outputs/team_deck_risk_5pct
+      - name: Run higher landlord coordination cost stress
+        run: python model_team_deck.py --landlord-setup 5000 --landlord-annual 10000 --output outputs/team_deck_landlord_cost_stress
       - name: Upload integrated model results
         uses: actions/upload-artifact@v4
         with:
@@ -68,6 +76,9 @@ jobs:
             outputs/integrated_participation/
             outputs/participation/
             outputs/strategy_b_attribution/
+            outputs/team_deck/
+            outputs/team_deck_risk_5pct/
+            outputs/team_deck_landlord_cost_stress/
           if-no-files-found: error
       - name: Upload landlord cost-analysis results
         uses: actions/upload-artifact@v4
