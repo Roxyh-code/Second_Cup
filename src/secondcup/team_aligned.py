@@ -65,7 +65,7 @@ class TeamAssumptions:
     weekdays_per_week: int = 5
     # Costs, if any, for implementing fixed slots (not in Case/team deck).
     slot_setup_per_cafe: float = 0.0
-    slot_annual_per_cafe: float = 0.0
+    slot_annual_per_cafe: float = 0.0  # optional OWNER cost, not HQ
 
     def validate(self):
         bounded = ("base_interest_consent", "loan_uptake", "loan_sweep",
@@ -306,8 +306,8 @@ def evaluate_team_case(data: Inputs, *,
                     fees_q[global_q] += extra_program_fee * count
                     interest_q[global_q] += interest_paid * count
                     repay_q[global_q] += principal_paid * count
-                    if l3 and terms.slot_annual_per_cafe:
-                        slot_cost_q[global_q] += terms.slot_annual_per_cafe * count / 4
+                    # Optional annual slot operating expense is borne by
+                    # franchisees above, not HQ; do not charge it a second time.
                 loan_schedule.append({
                     "type": t, "launch_q": cohort.quarter,
                     "financed": is_funded, "stores": count,
