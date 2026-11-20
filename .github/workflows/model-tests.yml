@@ -66,6 +66,10 @@ jobs:
         run: python model_team_deck.py --leakage-without-slots .05 --output outputs/team_deck_risk_5pct
       - name: Run higher landlord coordination cost stress
         run: python model_team_deck.py --landlord-setup 5000 --landlord-annual 10000 --output outputs/team_deck_landlord_cost_stress
+      - name: Run supporting fee removed sensitivity
+        run: python model_team_deck.py --supporting-fee 0 --output outputs/team_deck_no_fee
+      - name: Run weaker landlord conversion sensitivity
+        run: python model_team_deck.py --landlord-conversion .15 --output outputs/team_deck_conversion_15pct
       - name: Upload integrated model results
         uses: actions/upload-artifact@v4
         with:
@@ -79,6 +83,8 @@ jobs:
             outputs/team_deck/
             outputs/team_deck_risk_5pct/
             outputs/team_deck_landlord_cost_stress/
+            outputs/team_deck_no_fee/
+            outputs/team_deck_conversion_15pct/
           if-no-files-found: error
       - name: Upload landlord cost-analysis results
         uses: actions/upload-artifact@v4
