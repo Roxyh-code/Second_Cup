@@ -64,7 +64,7 @@ def main():
             {"type": x.typ, "option": x.option, "quarter": x.quarter,
              "cafes": x.count} for x in result[key]])
     sensitivity = []
-    for interested in (0.5, 1.0):
+    for interested in (0.0, 0.5, 1.0):
         for conversion in (0.0, 0.25, 0.50, 2 / 3, 1.0):
             r = run_participation_uplift(
                 "B Only", get_launches("B Only"), data,
