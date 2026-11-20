@@ -64,6 +64,7 @@ def main():
         ("owners", "owner_cohorts.csv"),
         ("loans", "loan_schedule.csv"),
         ("slot_metrics", "fixed_slots_capacity.csv"),
+        ("owner_profit_lifts", "owner_profit_lifts.csv"),
     ):
         csv_save(args.output/filename, matrix[field])
     (args.output/"assumptions.json").write_text(
