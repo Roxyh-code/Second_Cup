@@ -140,6 +140,18 @@ class TeamDeckTest(unittest.TestCase):
                            a["summary"]["hq_gross_spending_2027_2029"])
         self.assertEqual(b["summary"]["hq_common_program_fee_through_2031"],0)
 
+    def test_owner_profit_lifts_match_team_slide_midpoint_figures(self):
+        from secondcup.team_aligned import owner_profit_lifts
+        rows=owner_profit_lifts(self.data,self.base)
+        pre={r["type"]:r for r in rows if not r["landlord_accounts_included"]}
+        post={r["type"]:r for r in rows if r["landlord_accounts_included"]}
+        self.assertAlmostEqual(pre["Downtown"]["steady_owner_profit_lift_pct"],20,delta=.1)
+        self.assertAlmostEqual(pre["University"]["steady_owner_profit_lift_pct"],18,delta=.3)
+        self.assertAlmostEqual(pre["Suburban"]["steady_owner_profit_lift_pct"],24,delta=.3)
+        for name in pre:
+            self.assertGreater(post[name]["steady_owner_profit_lift_pct"],
+                               pre[name]["steady_owner_profit_lift_pct"])
+
     def test_invalid_assumptions_fail(self):
         for t in (replace(self.base,no_slots_sales_leakage=-.1),
                   replace(self.base,conversion_of_intros=1.1),
