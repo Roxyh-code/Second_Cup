@@ -57,6 +57,9 @@ def main():
     for field, filename in (
         ("scenarios", "scenario_matrix.csv"),
         ("waterfall", "waterfall_for_slide.csv"),
+        ("team_order_waterfall", "team_order_waterfall.csv"),
+        ("standalone_effects", "standalone_effects.csv"),
+        ("value_bridge", "bridge_with_synergies.csv"),
         ("hq_quarters", "hq_quarterly.csv"),
         ("owners", "owner_cohorts.csv"),
         ("loans", "loan_schedule.csv"),
@@ -82,6 +85,12 @@ def main():
     print("Slide waterfall:")
     for x in matrix["waterfall"]:
         print(x["stage"], x["hq_5y_npv"], x["step_npv_increase"])
+    print("Team slide order waterfall:")
+    for x in matrix["team_order_waterfall"]:
+        print(x["stage"], x["hq_5y_npv"], x["step_npv_increase"])
+    print("Standalone NPV effects and cross-lever synergy:")
+    for x in matrix["value_bridge"]:
+        print(f"  {x['component']}: ${x['npv_amount']:+,.2f}")
     print("Outputs:",args.output)
 
 
