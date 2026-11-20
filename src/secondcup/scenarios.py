@@ -240,7 +240,10 @@ def validate_launches(
                 f"{candidates} candidate cafes"
             )
 
-    # Constraint 3: Pilot observation period
+    # Constraint 3: Pilot observation period.
+    # If pilot starts at Q1 start (q0), two full observation quarters
+    # are Q1 and Q2; rollout at Q3 start (q2) is permitted.
+    # q1 is blocked while q2 is the first valid expansion quarter.
     if check_pilot and first_launch_quarter is not None:
 
         observation_quarters = int(
@@ -251,7 +254,7 @@ def validate_launches(
 
             if (
                 first_launch_quarter < quarter
-                <= first_launch_quarter + observation_quarters
+                < first_launch_quarter + observation_quarters
                 and count > 0
             ):
                 errors.append(
