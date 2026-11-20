@@ -102,7 +102,7 @@ python model_team_deck.py --supporting-fee 0
 python -m unittest discover -s tests -v
 \`\`\`
 
-For presentation use: \`outputs/team_deck/scenario_matrix.csv\`,
+For presentation use: \`outputs/team_deck/scenario_matrix.csv\`,\n\`team_order_waterfall.csv\`, \`standalone_effects.csv\`,\n\`bridge_with_synergies.csv\`,
 \`waterfall_for_slide.csv\`, \`fixed_slots_capacity.csv\`.
 Also exports complete owner cohorts, loan ledger and quarterly HQ cash
 flows. Always identify team hypothetical policies vs the supplied Case.
@@ -120,3 +120,7 @@ footnote **~20 cups/slot suburban; 3.5 min / 4.2 test at pilot**.
 If explaining the budget, use *gross HQ spend* (including $90k/year),
 and DO NOT call $579k loans sales. Put the assumed 5% deferred program
 fee and $25k / $1.8k portal in small-print assumptions.
+
+The team-order NPV bridge, financial synergy, and a one-minute talking script
+are in `MODELING_SLIDE_NOTES.md`. See the root `README.md` for the
+primary versus legacy model distinction.
